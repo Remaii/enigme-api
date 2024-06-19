@@ -18,7 +18,7 @@ export class AuthMiddleware implements NestMiddleware {
     }
 
     try {
-      const decoded = this.jwtService.verify(token, { secret: config.secretKey });
+      const decoded = this.jwtService.verify(token, { secret: config.jwt.secretKey });
       req['user'] = decoded;
       next();
     } catch (err) {

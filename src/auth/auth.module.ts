@@ -9,7 +9,7 @@ import config from '../../config';
   imports: [
     UserModule,
     JwtModule.register({
-      secret: config.secretKey,
+      secret: config.jwt.secretKey,
       signOptions: { expiresIn: '7d' },
     }),
   ],
