@@ -6,45 +6,46 @@ import {
   Delete,
   Param,
   Body,
+  Req,
 } from '@nestjs/common';
 import { EnigmeService } from './enigme.service';
 
-@Controller('question')
+@Controller('enigmes')
 export class EnigmeController {
   constructor(private readonly enigmeService: EnigmeService) {}
 
   @Post()
-  async addQuestion() {
-    return await this.enigmeService.create({});
+  async createQuestion(@Body('title') title: string, @Req() request: any) {
+    const requestingUser = request.user;
+    return await this.enigmeService.create(
+      {
+        title,
+      },
+      requestingUser,
+    );
   }
 
-  @Get(':enigme')
-  async getQuestions(@Param('enigme') enigme: string) {
-    return await this.enigmeService.getAllEnigmes(enigme);
-  }
-
-  @Get(':enigme/:order')
-  async getOneQuestion(
-    @Param('enigme') enigme: string,
-    @Param('order') order: number,
-  ) {
-    return await this.enigmeService.getOneEnigme(enigme, order);
+  @Get(':slug')
+  async getEnigme(@Param('slug') slug: string) {
+    return await this.enigmeService.getAllEnigmes(slug);
   }
 
   @Patch(':enigme_id')
-  async updateQuestion(
+  async updateEnigme(
     @Param('enigme_id') enigmeId: string,
-    @Body('enigme') enigme: string,
-    @Body('question') question: string,
-    @Body('answer') answer: string,
-    @Body('order') order: number,
+    @Body('title') title: string,
+    @Body('updateSlug') updateSlug: boolean,
+    @Req() request: any,
   ) {
-    return await this.enigmeService.updateEnigme(enigmeId, {
-      enigme,
-      question,
-      answer,
-      order,
-    });
+    const requestingUser = request.user;
+    return await this.enigmeService.updateEnigme(
+      enigmeId,
+      {
+        title,
+        updateSlug,
+      },
+      requestingUser,
+    );
   }
 
   @Delete(':enigme_id')

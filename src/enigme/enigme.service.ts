@@ -1,7 +1,14 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  ConflictException,
+  ForbiddenException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Enigme } from './enigme.schema';
+import { User } from '../user/user.schema';
+import { SlugService } from './slug.service';
 
 @Injectable()
 export class EnigmeService {
@@ -9,46 +16,59 @@ export class EnigmeService {
     @InjectModel('Enigme') private readonly enigmeModel: Model<Enigme>,
   ) {}
 
-  async create(createEnigmeDto: any): Promise<Enigme> {
+  async create(createEnigmeDto: any, owner: User): Promise<Enigme> {
     try {
-      const { enigme, question, answer, order } = createEnigmeDto;
+      const { title } = createEnigmeDto;
+      const slug = SlugService.generateSlug(title);
+
       const newEnigme = new this.enigmeModel({
-        enigme,
-        question,
-        answer,
-        order,
+        title,
+        slug,
+        owner: owner.id,
       });
       return await newEnigme.save();
     } catch (error) {
+      if (error.code === 11000 || error.code === 11001) {
+        throw new ConflictException('Title already exists');
+      }
       throw error;
     }
   }
 
-  async getAllEnigmes(enigme: string): Promise<Enigme[]> {
-    return await this.enigmeModel.find({ enigme }).exec();
+  async getAllEnigmes(slug: string): Promise<Enigme[]> {
+    return await this.enigmeModel.find({ slug }).exec();
   }
 
-  async getOneEnigme(enigme: string, order: number): Promise<Enigme> {
-    return await this.enigmeModel.findOne({ enigme, order }).exec();
-  }
-
-  async updateEnigme(enigmeId: string, enigmeDto: any): Promise<Enigme> {
-    const { enigme, question, answer, order } = enigmeDto;
-    const updatedEnigme = await this.enigmeModel.findById(
-      enigmeId,
-      { enigme, question, answer, order },
-      { new: true },
-    );
-    if (!updatedEnigme) {
-      throw new NotFoundException('Enigme not found');
+  async updateEnigme(enigmeId: string, enigmeDto: any, user): Promise<Enigme> {
+    const data = await this.enigmeModel.findById(enigmeId).exec();
+    if (data.owner !== user.id && !user.admin) {
+      throw new ForbiddenException('Access denied, Admin privilege require');
     }
-    return updatedEnigme;
+    try {
+      const { title, updateSlug } = enigmeDto;
+      const update = {
+        title: title,
+        slug: SlugService.generateSlug(title),
+      };
+      if (!updateSlug) {
+        delete update.slug;
+      }
+      return await this.enigmeModel.findById(enigmeId, update, {
+        new: true,
+      });
+    } catch (error) {
+      if (error.code === 11000 || error.code === 11001) {
+        throw new ConflictException('Title already exists');
+      }
+      throw error;
+    }
   }
 
   async deleteEnigme(enigmeId: string): Promise<void> {
+    const data = await this.enigmeModel.findById(enigmeId).exec();
     const result = await this.enigmeModel.findByIdAndUpdate(
       enigmeId,
-      { deletedDate: new Date() },
+      { slug: 'DELETED_' + data.slug, deletedDate: new Date() },
       { new: true },
     );
     if (!result) {
