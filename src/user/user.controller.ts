@@ -15,7 +15,7 @@ export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @Post()
-  async addUser(
+  async createUser(
     @Body('name') name: string,
     @Body('email') email: string,
     @Body('password') password: string,
@@ -31,14 +31,17 @@ export class UserController {
 
   @Get()
   async getAllUsers(@Req() request: any) {
-    const requestingUser = request.user;
-    return await this.userService.getUsers(requestingUser);
+    return await this.userService.getUsers(request.user);
+  }
+
+  @Get('me')
+  async getMe(@Req() request: any) {
+    return await this.userService.getMyUser(request.user);
   }
 
   @Get(':id')
   async getUser(@Param('id') userId: string, @Req() request: any) {
-    const requestingUser = request.user;
-    return await this.userService.getUser(userId, requestingUser);
+    return await this.userService.getUser(userId, request.user);
   }
 
   @Patch(':id')
@@ -47,17 +50,22 @@ export class UserController {
     @Body('name') name: string,
     @Body('email') email: string,
     @Body('password') password: string,
+    @Req() request: any,
   ) {
-    return await this.userService.updateUser(userId, {
-      name,
-      email,
-      password,
-    });
+    return await this.userService.updateUser(
+      userId,
+      {
+        name,
+        email,
+        password,
+      },
+      request.user,
+    );
   }
 
   @Delete(':id')
-  async removeUser(@Param('id') userId: string) {
-    await this.userService.deleteUser(userId);
+  async removeUser(@Param('id') userId: string, @Req() request: any) {
+    await this.userService.deleteUser(userId, request.user);
     return null;
   }
 }
