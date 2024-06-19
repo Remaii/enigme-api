@@ -1,5 +1,4 @@
 import { Module, MiddlewareConsumer, RequestMethod } from '@nestjs/common';
-import { SessionModule } from 'nestjs-session';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { MongooseModule } from '@nestjs/mongoose';
@@ -18,9 +17,6 @@ const fullMongoUri =
 
 @Module({
   imports: [
-    SessionModule.forRoot({
-      session: { secret: config.secretKey },
-    }),
     MongooseModule.forRoot(fullMongoUri),
     UserModule,
     AuthModule,
@@ -35,7 +31,12 @@ export class AppModule {
       .apply(AuthMiddleware)
       .forRoutes(
         { path: 'users', method: RequestMethod.GET },
+        { path: 'users/me', method: RequestMethod.GET },
         { path: 'users/:id', method: RequestMethod.GET },
+        { path: 'users/:id', method: RequestMethod.PATCH },
+        { path: 'users/:id', method: RequestMethod.DELETE },
+        { path: 'enigmes', method: RequestMethod.POST },
+        { path: 'enigmes/:id', method: RequestMethod.PATCH },
       );
   }
 }
