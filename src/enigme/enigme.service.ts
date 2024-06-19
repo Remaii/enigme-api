@@ -35,13 +35,17 @@ export class EnigmeService {
     }
   }
 
-  async getAllEnigmes(slug: string): Promise<Enigme[]> {
-    return await this.enigmeModel.find({ slug }).exec();
+  async getEnigmes(slug: string): Promise<Enigme> {
+    return await this.enigmeModel.findOne({ slug }).exec();
   }
 
-  async updateEnigme(enigmeId: string, enigmeDto: any, user): Promise<Enigme> {
+  async updateEnigme(
+    enigmeId: string,
+    enigmeDto: any,
+    user: User,
+  ): Promise<Enigme> {
     const data = await this.enigmeModel.findById(enigmeId).exec();
-    if (data.owner !== user.id && !user.admin) {
+    if (data.owner.toString() !== user.id && !user.admin) {
       throw new ForbiddenException('Access denied, Admin privilege require');
     }
     try {
@@ -49,11 +53,12 @@ export class EnigmeService {
       const update = {
         title: title,
         slug: SlugService.generateSlug(title),
+        updatedDate: new Date(),
       };
       if (!updateSlug) {
         delete update.slug;
       }
-      return await this.enigmeModel.findById(enigmeId, update, {
+      return await this.enigmeModel.findByIdAndUpdate(enigmeId, update, {
         new: true,
       });
     } catch (error) {
@@ -64,8 +69,11 @@ export class EnigmeService {
     }
   }
 
-  async deleteEnigme(enigmeId: string): Promise<void> {
+  async deleteEnigme(enigmeId: string, requestingUser: User): Promise<void> {
     const data = await this.enigmeModel.findById(enigmeId).exec();
+    if (data.owner.toString() !== requestingUser.id && !requestingUser.admin) {
+      throw new ForbiddenException('Access denied, Admin privilege require');
+    }
     const result = await this.enigmeModel.findByIdAndUpdate(
       enigmeId,
       { slug: 'DELETED_' + data.slug, deletedDate: new Date() },

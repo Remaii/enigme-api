@@ -15,7 +15,7 @@ export class EnigmeController {
   constructor(private readonly enigmeService: EnigmeService) {}
 
   @Post()
-  async createQuestion(@Body('title') title: string, @Req() request: any) {
+  async createEnigme(@Body('title') title: string, @Req() request: any) {
     const requestingUser = request.user;
     return await this.enigmeService.create(
       {
@@ -27,7 +27,7 @@ export class EnigmeController {
 
   @Get(':slug')
   async getEnigme(@Param('slug') slug: string) {
-    return await this.enigmeService.getAllEnigmes(slug);
+    return await this.enigmeService.getEnigmes(slug);
   }
 
   @Patch(':enigme_id')
@@ -49,8 +49,11 @@ export class EnigmeController {
   }
 
   @Delete(':enigme_id')
-  async removeEnigme(@Param('enigme_id') enigmeId: string) {
-    await this.enigmeService.deleteEnigme(enigmeId);
+  async removeEnigme(
+    @Param('enigme_id') enigmeId: string,
+    @Req() request: any,
+  ) {
+    await this.enigmeService.deleteEnigme(enigmeId, request.user);
     return null;
   }
 }

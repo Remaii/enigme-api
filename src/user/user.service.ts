@@ -86,7 +86,7 @@ export class UserService {
       const { name, email, password } = userDto;
       const updatedUser = await this.userModel.findByIdAndUpdate(
         userId,
-        { name, email, password },
+        { name, email, password, updatedDate: new Date() },
         { new: true },
       );
       if (!updatedUser) {
@@ -108,9 +108,10 @@ export class UserService {
     if (userId !== requestingUser.id && !requestingUser.admin) {
       throw new ForbiddenException('Access denied');
     }
+    const original = await this.userModel.findById(userId).exec();
     const result = await this.userModel.findByIdAndUpdate(
       userId,
-      { deletedDate: Date.now() },
+      { email: 'DELETED_' + original.email, deletedDate: Date.now() },
       { new: true },
     );
     if (!result) {
