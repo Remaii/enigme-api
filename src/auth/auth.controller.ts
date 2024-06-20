@@ -8,7 +8,7 @@ import {
 import { AuthService } from './auth.service';
 import { Response } from 'express';
 
-@Controller('auth')
+@Controller('api/auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 

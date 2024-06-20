@@ -8,6 +8,7 @@ import { AuthModule } from './auth/auth.module';
 import { EnigmeModule } from './enigme/enigme.module';
 import { ActivityModule } from './activity/activity.module';
 import config from '../config';
+import { RevealModule } from "./reveal/reveal.module";
 
 const fullMongoUri =
   'mongodb+srv://' +
@@ -23,6 +24,7 @@ const fullMongoUri =
     AuthModule,
     EnigmeModule,
     ActivityModule,
+    RevealModule,
   ],
   controllers: [AppController],
   providers: [AppService],
@@ -31,19 +33,23 @@ export class AppModule {
   configure(consumer: MiddlewareConsumer) {
     consumer.apply(AuthMiddleware).forRoutes(
       // Users
-      { path: 'users', method: RequestMethod.GET },
-      { path: 'users/me', method: RequestMethod.GET },
-      { path: 'users/:id', method: RequestMethod.GET },
-      { path: 'users/:id', method: RequestMethod.PATCH },
-      { path: 'users/:id', method: RequestMethod.DELETE },
+      { path: 'api/users', method: RequestMethod.GET },
+      { path: 'api/users/me', method: RequestMethod.GET },
+      { path: 'api/users/:id', method: RequestMethod.GET },
+      { path: 'api/users/:id', method: RequestMethod.PATCH },
+      { path: 'api/users/:id', method: RequestMethod.DELETE },
       // Enigmes
-      { path: 'enigmes', method: RequestMethod.POST },
-      { path: 'enigmes/:id', method: RequestMethod.PATCH },
-      { path: 'enigmes/:id', method: RequestMethod.DELETE },
+      { path: 'api/enigmes', method: RequestMethod.POST },
+      { path: 'api/enigmes/:id', method: RequestMethod.PATCH },
+      { path: 'api/enigmes/:id', method: RequestMethod.DELETE },
       // Activity
-      { path: 'activity', method: RequestMethod.POST },
-      { path: 'activity/:id', method: RequestMethod.PATCH },
-      { path: 'activity/:id', method: RequestMethod.DELETE },
+      { path: 'api/activity', method: RequestMethod.POST },
+      { path: 'api/activity/:id', method: RequestMethod.PATCH },
+      { path: 'api/activity/:id', method: RequestMethod.DELETE },
+      // Reveal
+      { path: 'api/reveal', method: RequestMethod.POST },
+      { path: 'api/reveal/:id', method: RequestMethod.PATCH },
+      { path: 'api/reveal/:id', method: RequestMethod.DELETE },
     );
   }
 }

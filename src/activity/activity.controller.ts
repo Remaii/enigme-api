@@ -10,7 +10,7 @@ import {
 } from '@nestjs/common';
 import { ActivityService } from './activity.service';
 
-@Controller('activity')
+@Controller('api/activity')
 export class ActivityController {
   constructor(private readonly activityService: ActivityService) {}
 
@@ -18,12 +18,16 @@ export class ActivityController {
   async createActivity(
     @Body('enigme') enigme: string,
     @Body('activity') activity: string,
+    @Body('message') message: string,
+    @Body('win') win: string,
     @Req() request: any,
   ) {
     return await this.activityService.create(
       {
         enigme,
         activity,
+        message,
+        win,
       },
       request.user,
     );
@@ -57,7 +61,7 @@ export class ActivityController {
   }
 
   @Delete(':activity_id')
-  async removeEnigme(
+  async removeActivity(
     @Param('activity_id') activityId: string,
     @Req() request: any,
   ) {

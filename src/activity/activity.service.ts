@@ -16,13 +16,15 @@ export class ActivityService {
 
   async create(activityDto: any, requestingUser: User): Promise<Activity> {
     try {
-      const { enigme, activity } = activityDto;
+      const { enigme, activity, message, win } = activityDto;
       const count = await this.activityModel
         .find({ enigme, deletedDate: null })
         .countDocuments();
       const newActivity = new this.activityModel({
         enigme,
         activity,
+        message,
+        win,
         order: count + 1,
         owner: requestingUser.id,
       });
