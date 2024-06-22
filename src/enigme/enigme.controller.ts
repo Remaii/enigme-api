@@ -9,6 +9,7 @@ import {
   Req,
 } from '@nestjs/common';
 import { EnigmeService } from './enigme.service';
+import { Enigme } from "./enigme.schema";
 
 @Controller('api/enigmes')
 export class EnigmeController {
@@ -23,6 +24,11 @@ export class EnigmeController {
       },
       requestingUser,
     );
+  }
+
+  @Get()
+  async getEnigmes(@Req() request: any): Promise<Enigme[]> {
+    return await this.enigmeService.getAllEnigmes(request.user);
   }
 
   @Get(':slug')

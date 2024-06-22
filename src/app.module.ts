@@ -40,6 +40,7 @@ export class AppModule {
       { path: 'api/users/:id', method: RequestMethod.DELETE },
       // Enigmes
       { path: 'api/enigmes', method: RequestMethod.POST },
+      { path: 'api/enigmes', method: RequestMethod.GET },
       { path: 'api/enigmes/:id', method: RequestMethod.PATCH },
       { path: 'api/enigmes/:id', method: RequestMethod.DELETE },
       // Activity

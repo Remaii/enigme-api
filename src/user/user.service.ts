@@ -76,6 +76,7 @@ export class UserService {
     userDto: any,
     requestingUser: User,
   ): Promise<User> {
+    console.log(userId, userDto);
     if (!userId || userId === ':id') {
       throw new NotFoundException('User ID requested');
     }
@@ -84,9 +85,18 @@ export class UserService {
     }
     try {
       const { name, email, password } = userDto;
+      const update = {
+        name,
+        email,
+        updatedDate: new Date(),
+      };
+      if (!!password) {
+        const hashedPassword = await bcrypt.hash(password, 10);
+        update['password'] = hashedPassword;
+      }
       const updatedUser = await this.userModel.findByIdAndUpdate(
         userId,
-        { name, email, password, updatedDate: new Date() },
+        update,
         { new: true },
       );
       if (!updatedUser) {

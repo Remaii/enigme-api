@@ -60,10 +60,10 @@ export class ActivityService {
     ) {
       throw new ForbiddenException('Access denied, Admin privilege require');
     }
-    const { activity, order } = activityDto;
+    const { activity, order, win, message } = activityDto;
     const updatedActivity = await this.activityModel.findByIdAndUpdate(
       activityId,
-      { activity, order, updatedDate: new Date() },
+      { activity, order, win, message, updatedDate: new Date() },
       { new: true },
     );
     if (!updatedActivity) {

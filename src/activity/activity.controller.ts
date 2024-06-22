@@ -47,14 +47,18 @@ export class ActivityController {
   async updateActivity(
     @Param('activity_id') activityId: string,
     @Body('activity') activity: string,
+    @Body('message') message: string,
     @Body('order') order: number,
+    @Body('win') win: number,
     @Req() request: any,
   ) {
     return await this.activityService.updateActivity(
       activityId,
       {
         activity,
+        message,
         order,
+        win,
       },
       request.user,
     );
