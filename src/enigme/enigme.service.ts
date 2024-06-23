@@ -36,7 +36,7 @@ export class EnigmeService {
   }
 
   async getAllEnigmes(user: User): Promise<Enigme[]> {
-    return await this.enigmeModel.find({ owner: user.id }).exec();
+    return await this.enigmeModel.find({ owner: user.id, deletedDate: null }).exec();
   }
 
   async getEnigmes(slug: string): Promise<Enigme> {
@@ -48,6 +48,8 @@ export class EnigmeService {
     enigmeDto: any,
     user: User,
   ): Promise<Enigme> {
+    console.log('updateEnigme', enigmeDto);
+
     const data = await this.enigmeModel.findById(enigmeId).exec();
     if (data.owner.toString() !== user.id && !user.admin) {
       throw new ForbiddenException('Access denied, Admin privilege require');

@@ -9,7 +9,7 @@ import {
   Req,
 } from '@nestjs/common';
 import { EnigmeService } from './enigme.service';
-import { Enigme } from "./enigme.schema";
+import { Enigme } from './enigme.schema';
 
 @Controller('api/enigmes')
 export class EnigmeController {

@@ -32,10 +32,11 @@ export class RevealService {
     return await this.revealModel.findById(revealId).exec();
   }
 
-  async getRevealByEnigme(enigmeId: string): Promise<Reveal> {
-    return await this.revealModel
+  async getRevealByEnigme(enigmeId: string): Promise<any> {
+    const reveal = await this.revealModel
       .findOne({ enigme: enigmeId, deletedDate: null })
       .exec();
+    return !!reveal ? reveal : {};
   }
 
   async updateReveal(
