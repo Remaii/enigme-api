@@ -23,7 +23,7 @@ export class AuthController {
       throw new UnauthorizedException();
     }
     const jwt = await this.authService.login(user);
-    response.cookie('jwt', jwt.access_token, { httpOnly: true });
+    response.cookie('jwt', jwt.access_token, { maxAge: 7 * 24 * 60 * 3600 });
     return { message: 'Login successful' };
   }
 }

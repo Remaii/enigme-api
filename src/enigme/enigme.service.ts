@@ -36,11 +36,19 @@ export class EnigmeService {
   }
 
   async getAllEnigmes(user: User): Promise<Enigme[]> {
-    return await this.enigmeModel.find({ owner: user.id, deletedDate: null }).exec();
+    return await this.enigmeModel
+      .find({ owner: user.id, deletedDate: null })
+      .exec();
   }
 
   async getEnigmes(slug: string): Promise<Enigme> {
-    return await this.enigmeModel.findOne({ slug }).exec();
+    return await this.enigmeModel
+      .findOne({ slug })
+      .populate({
+        path: 'owner',
+        select: 'name _id',
+      })
+      .exec();
   }
 
   async updateEnigme(

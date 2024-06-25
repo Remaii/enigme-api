@@ -1,4 +1,6 @@
 import { Module, MiddlewareConsumer, RequestMethod } from '@nestjs/common';
+
+import config from '../config';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { MongooseModule } from '@nestjs/mongoose';
@@ -7,8 +9,8 @@ import { AuthMiddleware } from './auth/auth.middleware';
 import { AuthModule } from './auth/auth.module';
 import { EnigmeModule } from './enigme/enigme.module';
 import { ActivityModule } from './activity/activity.module';
-import config from '../config';
-import { RevealModule } from "./reveal/reveal.module";
+import { RevealModule } from './reveal/reveal.module';
+import { ParticipantModule } from './participant/participant.module';
 
 const fullMongoUri =
   'mongodb+srv://' +
@@ -25,6 +27,7 @@ const fullMongoUri =
     EnigmeModule,
     ActivityModule,
     RevealModule,
+    ParticipantModule,
   ],
   controllers: [AppController],
   providers: [AppService],
