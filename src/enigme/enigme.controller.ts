@@ -30,8 +30,12 @@ export class EnigmeController {
   async getEnigmes(@Req() request: any): Promise<Enigme[]> {
     return await this.enigmeService.getAllEnigmes(request.user);
   }
+  @Get('one')
+  async getOneEnigme(): Promise<Enigme> {
+    return await this.enigmeService.getOneEnigmes();
+  }
 
-  @Get(':slug')
+  @Get('one/:slug')
   async getEnigme(@Param('slug') slug: string) {
     return await this.enigmeService.getEnigmes(slug);
   }

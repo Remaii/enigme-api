@@ -41,6 +41,10 @@ export class EnigmeService {
       .exec();
   }
 
+  async getOneEnigmes(): Promise<Enigme> {
+    return await this.enigmeModel.findOne({ deletedDate: null }).exec();
+  }
+
   async getEnigmes(slug: string): Promise<Enigme> {
     return await this.enigmeModel
       .findOne({ slug })

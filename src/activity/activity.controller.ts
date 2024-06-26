@@ -49,7 +49,7 @@ export class ActivityController {
     @Body('activity') activity: string,
     @Body('message') message: string,
     @Body('order') order: number,
-    @Body('win') win: number,
+    @Body('win') win: string,
     @Req() request: any,
   ) {
     return await this.activityService.updateActivity(
