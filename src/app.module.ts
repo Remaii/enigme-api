@@ -11,6 +11,7 @@ import { EnigmeModule } from './enigme/enigme.module';
 import { ActivityModule } from './activity/activity.module';
 import { RevealModule } from './reveal/reveal.module';
 import { ParticipantModule } from './participant/participant.module';
+import { ImageModule } from "./image/image.module";
 
 const fullMongoUri =
   'mongodb+srv://' +
@@ -28,6 +29,7 @@ const fullMongoUri =
     ActivityModule,
     RevealModule,
     ParticipantModule,
+    ImageModule,
   ],
   controllers: [AppController],
   providers: [AppService],
