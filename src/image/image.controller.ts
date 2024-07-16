@@ -1,4 +1,4 @@
-import { Controller, Post, Patch, Param, Body, Get } from '@nestjs/common';
+import { Controller, Post, Body } from '@nestjs/common';
 import { ImageService } from './image.service';
 
 @Controller('api/image')
@@ -7,16 +7,21 @@ export class ImageController {
 
   @Post('add-text-from-url')
   async addTextToImageFromUrl(
-    @Body() body: {
-      imageUrl: string,
-      text: string,
-      screenWidth: number,
-      screenHeight: number
+    @Body()
+    body: {
+      imageUrl: string;
+      text: string;
+      screenWidth: number;
+      screenHeight: number;
     },
   ) {
     const { imageUrl, text, screenWidth, screenHeight } = body;
-    const result = await this.imageService.addTextToImageFromUrl(imageUrl, text, screenWidth, screenHeight);
+    const result = await this.imageService.addTextToImageFromUrl(
+      imageUrl,
+      text,
+      screenWidth,
+      screenHeight,
+    );
     return { image: result };
   }
-
 }

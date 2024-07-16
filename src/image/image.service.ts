@@ -11,10 +11,13 @@ export class ImageService {
     let baseFontSize;
 
     if (screenWidth < 600) {
-      baseFontSize = 30; // petits écrans
+      // petits écrans
+      baseFontSize = 30;
     } else if (screenWidth < 1024) {
-      baseFontSize = 36; // écrans de taille moyenne
-    } else { // grands écrans
+      // écrans de taille moyenne
+      baseFontSize = 36;
+    } else {
+      // grands écrans
       baseFontSize = 40;
     }
 
@@ -30,7 +33,6 @@ export class ImageService {
       palette.Vibrant.getHex(),
       palette.LightVibrant.getHex(),
       palette.DarkVibrant.getHex(),
-      // Ajoutez d'autres couleurs si nécessaire (Muted, etc.)
     ];
 
     return dominantColors.filter((color) => color);
@@ -47,7 +49,9 @@ export class ImageService {
       const chromaColor = chroma(color);
       const luminance = chromaColor.luminance();
       const saturation = chromaColor.saturate().get('hsl.s');
-      const contrast = Math.abs(luminance - targetLuminance) + Math.abs(saturation - targetSaturation);
+      const contrast =
+        Math.abs(luminance - targetLuminance) +
+        Math.abs(saturation - targetSaturation);
       if (contrast > bestContrast) {
         bestContrast = contrast;
         bestColor = color;
@@ -57,7 +61,12 @@ export class ImageService {
     return bestColor;
   }
 
-  async addTextToImageFromUrl(imageUrl: string, text: string, screenWidth: number, screenHeight: number): Promise<string> {
+  async addTextToImageFromUrl(
+    imageUrl: string,
+    text: string,
+    screenWidth: number,
+    screenHeight: number,
+  ): Promise<string> {
     try {
       // Télécharger l'image à partir de l'URL en utilisant fetch
       const response = await fetch(imageUrl);
@@ -76,12 +85,12 @@ export class ImageService {
         <text x="50%" y="50%" font-family="Arial" font-size="${this.calculateFontSize(screenWidth)}" fill="${textColor}" text-anchor="middle">${text}</text>
       </svg>`;
 
-      const textImage = sharp(Buffer.from(svgText))
-        .png()
-        .resize(width, height);
+      const textImage = sharp(Buffer.from(svgText)).png().resize(width, height);
 
       const textBuffer = await textImage.toBuffer();
-      const combinedImage = await image.composite([{ input: textBuffer }]).toBuffer();
+      const combinedImage = await image
+        .composite([{ input: textBuffer }])
+        .toBuffer();
       const base64Image = combinedImage.toString('base64');
       return `data:image/png;base64,${base64Image}`;
     } catch (error) {
